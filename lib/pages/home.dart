@@ -18,24 +18,107 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    int a;
-    int b;
-    var list = random(a, b);
-    this._operation = list[0].toString() + " + " + list[1].toString() + " = ";
     this._score = 0;
+    randomizeOperation();
   }
 
-  List<int> random(a, b) {
-    a = rng.nextInt(80);
-    b = rng.nextInt(80);
-    if (a + b > 100) {
-      random(a, b);
-    } else {
-      var list = new List<int>();
-      list.add(a);
-      list.add(b);
-      return list;
+  void randomizeOperation() {
+    int a = rng.nextInt(80);
+    int b = rng.nextInt(80);
+    int x = rng.nextInt(4);
+    switch (x) {
+      case 0:
+        {
+          validateOperation(a, b, "+");
+        }
+        break;
+
+      case 1:
+        {
+          validateOperation(a, b, "-");
+        }
+        break;
+
+      case 2:
+        {
+          validateOperation(a, b, "*");
+        }
+        break;
+
+      case 3:
+        {
+          validateOperation(a, b, "/");
+        }
+        break;
+
+      default:
+        {}
+        break;
     }
+  }
+
+  void validateOperation(a, b, operation) {
+    switch (operation) {
+      case "+":
+        {
+          if (a + b > 100) {
+            randomizeOperation();
+          } else {
+            setOperation(a, b, operation);
+            setState(() {
+              this._result = a + b;
+            });
+          }
+        }
+        break;
+
+      case "-":
+        {
+          if (a - b < 0) {
+            randomizeOperation();
+          } else {
+            setOperation(a, b, operation);
+            setState(() {
+              this._result = a - b;
+            });
+          }
+        }
+        break;
+
+      case "*":
+        {
+          if (a * b > 100) {
+            randomizeOperation();
+          } else {
+            setOperation(a, b, operation);
+            setState(() {
+              this._result = a * b;
+            });
+          }
+        }
+        break;
+
+      case "/":
+        {
+          if (a % b != 0) {
+            randomizeOperation();
+          } else {
+            setOperation(a, b, operation);
+            setState(() {
+              this._result = a / b;
+            });
+          }
+        }
+        break;
+      default:
+    }
+  }
+
+  void setOperation(a, b, operation) {
+    setState(() {
+      this._operation =
+          a.toString() + " " + operation + " " + b.toString() + " = ";
+    });
   }
 
   void _onButtonPressed(number) {
@@ -44,7 +127,15 @@ class _HomePageState extends State<HomePage> {
         this._answer = this._answer.substring(0, this._answer.length - 1);
       });
     } else if (number == "?") {
-      //check answer
+      if (this._answer == this._result.toString()) {
+        setState(() {
+          this._score++;
+        });
+      }
+      randomizeOperation();
+      setState(() {
+        this._answer = "";
+      });
     } else {
       setState(() {
         this._answer = this._answer + number.toString();
