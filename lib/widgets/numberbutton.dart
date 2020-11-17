@@ -12,7 +12,7 @@ class NumberButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: Expanded(
+      child: Container(
         child: FlatButton(
           height: 50,
           color: Colors.blue,
